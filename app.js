@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Acción de compra: Por ahora disparamos un alert de confirmación.
             // Podés cambiar esto por un modal de Bootstrap o sumarlo a un carrito.
             alert(`¡Excelente elección!\n\nVas a comprar:\n${nombre}\n\nTotal: $${precio.toLocaleString('es-AR')}`);
-            
+
             // Ejemplo de cómo redirigir a WhatsApp con el producto ya escrito si quisieras:
             /*
             const mensaje = encodeURIComponent(`Hola! Me interesa comprar el producto: ${nombre} por $${precio.toLocaleString('es-AR')}`);
