@@ -54,7 +54,7 @@ body{
 /* Forzar que el título no rompa el diseño si es muy largo, cortándolo a 2 líneas */
 .text-truncate-2 {
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    
     -webkit-box-orient: vertical;
     overflow: hidden;
     font-weight: 600;
