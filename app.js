@@ -15,9 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // ==========================================================================
-    // FILTRO: Excluir los productos que van a la sección de Ofertas
-    // ==========================================================================
+
     const productosNormales = infoExcel.filter(item => {
         if (!item.Descuento) return true;
         
@@ -34,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Dibujamos únicamente los productos normales
+    
     productosNormales.forEach(item => {
         let nombreProducto = item.PRODUCTO || "Producto sin nombre";
         if (nombreProducto.includes("Pinza Amperimétrica Digital Uni-T UT210D")) {
@@ -79,15 +77,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         contenedorProductos.appendChild(columna);
     });
 
-    // ==========================================
-    // LÓGICA DEL BOTÓN DE COMPRAR (Alerta local)
-    // ==========================================
+    
     contenedorProductos.addEventListener('click', (e) => {
         if (e.target.classList.contains('btn-comprar')) {
             const nombre = e.target.getAttribute('data-name');
             const precio = parseInt(e.target.getAttribute('data-price'), 10);
 
-            // Muestra una ventana de confirmación en el navegador en lugar de abrir WhatsApp
+            
             alert(`¡Excelente elección!\n\nVas a comprar:\n${nombre}\n\nTotal: $${precio.toLocaleString('es-AR')}`);
         }
     });
