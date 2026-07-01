@@ -2,9 +2,6 @@ body{
     background-color: black;
 }
 
-/* ==========================================================================
-   Contenedor Principal de Productos
-   ========================================================================== */
 .productos {
     display: flex;
     flex-wrap: wrap;
@@ -13,11 +10,8 @@ body{
     padding: 20px 0;
 }
 
-/* ==========================================================================
-   Estilos de las Tarjetas (Cards)
-   ========================================================================== */
 .card {
-    /* Controla el ancho de las tarjetas para que se acomoden según la pantalla */
+    
     flex: 1 1 280px; 
     max-width: 320px;
     background-color: #ffffff;
@@ -26,32 +20,26 @@ body{
     overflow: hidden;
 }
 
-/* Efecto Hover para que la tarjeta se eleve un poco al pasar el mouse */
+
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* ==========================================================================
-   Contenedor de la Imagen y la Imagen de la Card
-   ========================================================================== */
+
 .card img {
     width: 100%;
     height: 100%;
-    /* Hace que la imagen mantenga su proporción original sin deformarse ni estirarse */
     object-fit: contain; 
     transition: transform 0.3s ease;
 }
 
-/* Efecto de zoom suave en la imagen cuando pasás el mouse sobre la tarjeta */
+
 .card:hover img {
     transform: scale(1.05);
 }
 
-/* ==========================================================================
-   Detalles de Texto Avanzados (Opcional)
-   ========================================================================== */
-/* Forzar que el título no rompa el diseño si es muy largo, cortándolo a 2 líneas */
+
 .text-truncate-2 {
     display: -webkit-box;
     
@@ -61,3 +49,24 @@ body{
     line-height: 1.3;
 }
 
+#carouselExampleAutoplaying {
+    width: 25vw;
+    height: 30vh;
+    margin: 0 auto; 
+    overflow: hidden; 
+    border-radius: 12px; 
+}
+
+
+#carouselExampleAutoplaying .carousel-inner,
+#carouselExampleAutoplaying .carousel-item {
+    width: 100%;
+    height: 100%;
+}
+
+
+#carouselExampleAutoplaying .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
