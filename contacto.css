@@ -1,6 +1,4 @@
-/* ==========================================================================
-   Estilos Generales de la Página (Mismos colores de Inicio)
-   ========================================================================== */
+
 body {
     background-color: black !important;
     min-height: 100vh;
@@ -8,7 +6,7 @@ body {
     flex-direction: column;
 }
 
-/* Contenedor wrapper para centrar la tarjeta vertical y horizontalmente */
+
 .seccion-contacto-wrapper {
     flex: 1;
     display: flex;
@@ -17,24 +15,22 @@ body {
     padding: 40px 20px;
 }
 
-/* ==========================================================================
-   Diseño de la Tarjeta de Contacto
-   ========================================================================== */
+
 .card-contacto {
-    background-color: #000000; /* Fondo negro como la barra */
+    background-color: #000000; 
     max-width: 450px;
     width: 100%;
     border-radius: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Efecto hover sutil que combina con la tienda */
+
 .card-contacto:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Animación sutil para los iconos al pasar por encima */
+
 .info-item {
     transition: transform 0.2s ease;
 }
@@ -42,9 +38,7 @@ body {
     transform: translateX(5px);
 }
 
-/* ==========================================================================
-   Estilos de la Navbar (Replicados para consistencia)
-   ========================================================================== */
+
 .navbar {
     padding: 15px 0;
 }
@@ -58,9 +52,7 @@ body {
     transition: color 0.2s ease;
 }
 
-/* ==========================================================================
-   Forzar texto blanco en la tarjeta de contacto
-   ========================================================================== */
+
 .card-contacto p, 
 .card-contacto span,
 .card-contacto .text-muted,

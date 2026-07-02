@@ -3,10 +3,10 @@ import { consumirExcelDrive } from "./consumirExcelDrive.js";
 const ID_EXCEL = "1RDN_6mV9xaEjAXrhvYCmjPndFYKid_i_eLO6b2lguWM";
 
 document.addEventListener('DOMContentLoaded', async () => {
-    
+    // 1. Cargamos el carrusel dinámico desde la pestaña Banners
     cargarCarruselDinamico();
 
-    
+    // 2. Cargamos el catálogo de productos
     const infoExcel = await consumirExcelDrive(ID_EXCEL);
     const contenedorProductos = document.querySelector('.productos');
 
@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    
+    // ==========================================================================
+    // FILTRO: Excluir los productos que van a la sección de Ofertas
+    // ==========================================================================
     const productosNormales = infoExcel.filter(item => {
         if (!item.Descuento) return true;
         
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-  
+    // Dibujamos únicamente los productos normales
     productosNormales.forEach(item => {
         let nombreProducto = item.PRODUCTO || "Producto sin nombre";
         if (nombreProducto.includes("Pinza Amperimétrica Digital Uni-T UT210D")) {
@@ -81,28 +83,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         contenedorProductos.appendChild(columna);
     });
 
-    // LÓGICA DEL BOTÓN DE COMPRAR
+    // LÓGICA DEL BOTÓN DE COMPRAR MODERNA (MODAL PREMIUM DE ÉXITO)
     contenedorProductos.addEventListener('click', (e) => {
         if (e.target.classList.contains('btn-comprar')) {
             const nombre = e.target.getAttribute('data-name');
             const precio = parseInt(e.target.getAttribute('data-price'), 10);
-            alert(`¡Excelente elección!\n\nVas a comprar:\n${nombre}\n\nTotal: $${precio.toLocaleString('es-AR')}`);
+
+            // Inyectamos los datos del producto seleccionado dentro del modal de éxito
+            document.getElementById('modalCompraNombre').textContent = nombre;
+            document.getElementById('modalCompraPrecio').textContent = `$${precio.toLocaleString('es-AR')}`;
+
+            // Levantamos el modal usando la API global de Bootstrap
+            const modalExito = new bootstrap.Modal(document.getElementById('modalCompraExito'));
+            modalExito.show();
         }
     });
 });
 
+// ==========================================================================
+// FUNCIÓN PARA GENERAR EL CARRUSEL EN TIEMPO REAL DESDE LA PESTAÑA 'Banners'
+// ==========================================================================
 async function cargarCarruselDinamico() {
     const contenedorBanners = document.getElementById('contenedorBanners');
     if (!contenedorBanners) return;
 
     try {
-        // Conectamos a la URL del Excel apuntando específicamente a la hoja 'Banners'
         const urlBanners = `https://docs.google.com/spreadsheets/d/${ID_EXCEL}/gviz/tq?tqx=out:json&sheet=Banners`;
         
         const respuesta = await fetch(urlBanners);
         const textoResponse = await respuesta.text();
         
-        // Limpiamos la respuesta JSON estructurada que devuelve la API de Google Sheets
         const jsonLimpio = JSON.parse(textoResponse.substring(47, textoResponse.length - 2));
         const filas = jsonLimpio.table.rows;
 
@@ -111,17 +121,15 @@ async function cargarCarruselDinamico() {
             return;
         }
 
-        contenedorBanners.innerHTML = ""; // Limpiamos cargadores previos
+        contenedorBanners.innerHTML = "";
 
         filas.forEach((fila, index) => {
-            // Evaluamos que la celda de la columna Imagen no esté vacía
             const urlImagen = fila.c[0] ? fila.c[0].v : null;
 
             if (urlImagen) {
                 const itemCarrusel = document.createElement('div');
                 itemCarrusel.classList.add('carousel-item');
                 
-                // Bootstrap exige que el primer elemento tenga obligatoriamente la clase 'active'
                 if (index === 0) {
                     itemCarrusel.classList.add('active');
                 }

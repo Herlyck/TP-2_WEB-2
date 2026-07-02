@@ -66,6 +66,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script type="module" src="app.js"></script>
+
     <div class="modal fade" id="modalFormulario" tabindex="-1" aria-labelledby="modalFormularioLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -84,6 +85,35 @@
                         width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">
                         Cargando formulario...
                     </iframe>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalCompraExito" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-black border border-success text-white rounded-3 shadow-lg p-3">
+
+                <div class="modal-body text-center">
+                    <div class="display-1 text-success mb-3">🛒</div>
+
+                    <h3 class="fw-bold text-success mb-2">¡Producto Seleccionado!</h3>
+                    <p class="text-white-50">Agregaste con éxito el siguiente artículo:</p>
+
+                    <div class="bg-dark p-3 rounded-3 border border-secondary mb-4 text-start">
+                        <h6 id="modalCompraNombre" class="fw-semibold text-white mb-2">Nombre del producto</h6>
+                        <p id="modalCompraPrecio" class="fs-4 fw-bold text-success mb-0">$0</p>
+                    </div>
+
+                    <p class="small text-white mb-4">
+                        📍 Recordá que podés retirarlo por nuestro local en <strong>La Tablada</strong> o coordinar el
+                        envío.
+                    </p>
+
+                    <button type="button" class="btn btn-success w-100 fw-bold py-2" data-bs-dismiss="modal">
+                        Seguir mirando productos
+                    </button>
                 </div>
 
             </div>

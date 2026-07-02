@@ -11,6 +11,7 @@
 
 <body class="bg-dark text-white">
 
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm border-bottom border-secondary">
         <div class="container">
             <a class="navbar-brand fw-bold text-primary fs-3" href="index.html">ElectroTienda</a>
@@ -38,41 +39,53 @@
         </div>
     </nav>
 
+    
     <main class="container seccion-contacto-wrapper">
-
         <div class="card card-contacto shadow border-secondary text-white">
             <div class="card-body p-4 text-center">
                 <h2 class="card-title text-primary fw-bold mb-4">📍 Nuestro Contacto</h2>
                 <hr class="border-secondary mb-4">
 
+             
                 <div class="mb-4 d-flex align-items-center justify-content-center gap-3 info-item text-start">
                     <span class="fs-4">🏠</span>
                     <div class="w-100">
-                        <p class="text-muted small mb-0">Ubicación</p>
+                        <p class="text-white-50 small mb-0">Ubicación</p>
                         <p class="fw-medium mb-0">La Tablada, Buenos Aires</p>
                     </div>
                 </div>
 
+                <!-- Teléfono -->
                 <div class="mb-4 d-flex align-items-center justify-content-center gap-3 info-item text-start">
                     <span class="fs-4">📞</span>
                     <div class="w-100">
-                        <p class="text-muted small mb-0">Teléfono de atención</p>
+                        <p class="text-white-50 small mb-0">Teléfono de atención</p>
                         <p class="fw-medium mb-0">11 5475-8824</p>
+                    </div>
+                </div>
+
+                <!-- Horarios -->
+                <div class="mb-5 d-flex align-items-center justify-content-center gap-3 info-item text-start">
+                    <span class="fs-4">⏰</span>
+                    <div class="w-100">
+                        <p class="text-white-50 small mb-0">Horarios de Atención</p>
+                        <p class="fw-medium mb-0">Lunes a Viernes de 09:00 a 18:00 hs</p>
+
                     </div>
                 </div>
 
                 <div class="mb-5 d-flex align-items-center justify-content-center gap-3 info-item text-start">
                     <span class="fs-4">⏰</span>
                     <div class="w-100">
-                        <p class="text-muted small mb-0">Horarios de Atención</p>
-                        <p class="fw-medium mb-0">Lunes a Viernes de 09:00 a 18:00 hs</p>
+                        <p class="text-white-50 small mb-0">Direccion de Correo Electronico</p>
+                        <p class="fw-medium mb-0">Lalolanda@gmail.com</p>
+                        
                     </div>
                 </div>
 
                 <a href="index.html" class="btn btn-outline-primary w-100 fw-medium py-2">Volver al Inicio</a>
             </div>
         </div>
-
     </main>
 
 
@@ -88,10 +101,9 @@
                         aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body p-0" style="height: 75vh; overflow-y: auto;">
-                    <iframe
-                        src="https://docs.google.com/forms/d/e/1FAIpQLSfYLaVj8OWJcZ4S-489C7Ijlpb0XvpNC0XSKMQ_DnQaCjeXjQ/viewform?embedded=true"
-                        width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">
+                <div class="modal-body p-0 contenedor-iframe-modal">
+                    <iframe class="iframe-google-form"
+                        src="https://docs.google.com/forms/d/e/1FAIpQLSfYLaVj8OWJcZ4S-489C7Ijlpb0XvpNC0XSKMQ_DnQaCjeXjQ/viewform?embedded=true">
                         Cargando formulario...
                     </iframe>
                 </div>
@@ -99,7 +111,6 @@
             </div>
         </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
