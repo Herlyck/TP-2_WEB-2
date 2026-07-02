@@ -1,10 +1,12 @@
 import { consumirExcelDrive } from "./consumirExcelDrive.js";
 
 const ID_EXCEL = "1RDN_6mV9xaEjAXrhvYCmjPndFYKid_i_eLO6b2lguWM";
+let listaProductosOferta = []; // Guardamos las ofertas acá para poder filtrarlas
 
 document.addEventListener('DOMContentLoaded', async () => {
     const infoExcel = await consumirExcelDrive(ID_EXCEL);
     const contenedorOfertas = document.querySelector('.productos-oferta');
+    const inputBuscador = document.getElementById('buscadorOfertas');
 
     if (!infoExcel || infoExcel.length === 0) {
         contenedorOfertas.innerHTML = `
@@ -18,29 +20,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================================================
     // FILTRO: Traer ÚNICAMENTE los productos que están marcados como Oferta
     // ==========================================================================
-    const productosEnOferta = infoExcel.filter(item => {
+    listaProductosOferta = infoExcel.filter(item => {
         if (!item.Descuento) return false;
-        
         const valorDescuento = item.Descuento.toString().trim().toUpperCase();
         return valorDescuento === "SI" || valorDescuento === "SÍ";
     });
 
-    if (productosEnOferta.length === 0) {
-        contenedorOfertas.innerHTML = `
-            <div class="col-12 text-center">
-                <p class="alert alert-info">Próximamente verás nuestras ofertas exclusivas en esta sección.</p>
+    // Render inicial: Muestra todas las ofertas al cargar la página
+    renderizarOfertas(listaProductosOferta, contenedorOfertas);
+
+    // ==========================================================================
+    // ESCUCHADOR DEL BUSCADOR DE OFERTAS: Filtra en tiempo real mientras escribís
+    // ==========================================================================
+    if (inputBuscador) {
+        inputBuscador.addEventListener('input', (e) => {
+            const textoBusqueda = e.target.value.toLowerCase().trim();
+            
+            // Filtramos el array global de ofertas
+            const ofertasFiltradas = listaProductosOferta.filter(item => {
+                const nombre = (item.PRODUCTO || "").toLowerCase();
+                return nombre.includes(textoBusqueda);
+            });
+
+            // Volvemos a dibujar solo las ofertas que coinciden
+            renderizarOfertas(ofertasFiltradas, contenedorOfertas);
+        });
+    }
+
+    // LÓGICA DEL BOTÓN DE COMPRAR
+    contenedorOfertas.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-comprar')) {
+            const nombre = e.target.getAttribute('data-name');
+            const precio = parseInt(e.target.getAttribute('data-price'), 10);
+
+            document.getElementById('modalCompraNombre').textContent = nombre;
+            document.getElementById('modalCompraPrecio').textContent = `$${precio.toLocaleString('es-AR')}`;
+
+            const modalExito = new bootstrap.Modal(document.getElementById('modalCompraExito'));
+            modalExito.show();
+        }
+    });
+});
+
+// ==========================================================================
+// FUNCIÓN PARA RENDERIZAR LAS TARJETAS DE OFERTAS
+// ==========================================================================
+function renderizarOfertas(productos, contenedor) {
+    contenedor.innerHTML = ""; // Limpiamos el contenedor antes de redibujar
+
+    if (productos.length === 0) {
+        contenedor.innerHTML = `
+            <div class="col-12 text-center my-4">
+                <p class="text-white-50 fs-5">🔍 No hay ofertas que coincidan con la búsqueda.</p>
             </div>
         `;
         return;
     }
 
-    // Dibujamos los productos en oferta
-    productosEnOferta.forEach(item => {
+    productos.forEach(item => {
         const nombreProducto = item.PRODUCTO || "Producto en Oferta";
         
         let precioLimpio = 0;
         if (item.PRECIO) {
-            precioLimpio = parseInt(item.PRECIO.toString().replace('$', ''), 10);
+            // CORRECCIÓN: Quitamos tanto el signo $ como los puntos de miles para evitar cortes en el parseInt
+            precioLimpio = parseInt(item.PRECIO.toString().replace(/[$.]/g, ''), 10);
         }
 
         const cuotas = item.Garantia || "Sin especificar";
@@ -75,22 +118,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
 
-        contenedorOfertas.appendChild(columna);
+        contenedor.appendChild(columna);
     });
-
-    // LÓGICA DEL BOTÓN DE COMPRAR MODERNA (MODAL PREMIUM DE ÉXITO)
-    contenedorOfertas.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-comprar')) {
-            const nombre = e.target.getAttribute('data-name');
-            const precio = parseInt(e.target.getAttribute('data-price'), 10);
-
-            // Inyectamos los datos en el modal de éxito de la sección ofertas
-            document.getElementById('modalCompraNombre').textContent = nombre;
-            document.getElementById('modalCompraPrecio').textContent = `$${precio.toLocaleString('es-AR')}`;
-
-            // Levantamos el modal usando la API global de Bootstrap
-            const modalExito = new bootstrap.Modal(document.getElementById('modalCompraExito'));
-            modalExito.show();
-        }
-    });
-});
+}

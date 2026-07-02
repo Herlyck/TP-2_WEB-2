@@ -1,14 +1,16 @@
 import { consumirExcelDrive } from "./consumirExcelDrive.js";
 
 const ID_EXCEL = "1RDN_6mV9xaEjAXrhvYCmjPndFYKid_i_eLO6b2lguWM";
+let listaProductosNormales = []; // Guardamos los productos acá para poder filtrarlos
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Cargamos el carrusel dinámico desde la pestaña Banners
+    // 1. Cargamos el carrusel dinámico
     cargarCarruselDinamico();
 
     // 2. Cargamos el catálogo de productos
     const infoExcel = await consumirExcelDrive(ID_EXCEL);
     const contenedorProductos = document.querySelector('.productos');
+    const inputBuscador = document.getElementById('buscadorProductos');
 
     if (!infoExcel || infoExcel.length === 0) {
         contenedorProductos.innerHTML = `
@@ -22,24 +24,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ==========================================================================
     // FILTRO: Excluir los productos que van a la sección de Ofertas
     // ==========================================================================
-    const productosNormales = infoExcel.filter(item => {
+    listaProductosNormales = infoExcel.filter(item => {
         if (!item.Descuento) return true;
-        
         const valorDescuento = item.Descuento.toString().trim().toUpperCase();
         return valorDescuento !== "SI" && valorDescuento !== "SÍ";
     });
 
-    if (productosNormales.length === 0) {
-        contenedorProductos.innerHTML = `
-            <div class="col-12 text-center">
-                <p class="alert alert-info">Todos nuestros productos actuales se encuentran en la sección de Ofertas.</p>
+    // Render inicial: Muestra todos los productos normales al cargar la página
+    renderizarProductos(listaProductosNormales, contenedorProductos);
+
+    // ==========================================================================
+    // ESCUCHADOR DEL BUSCADOR: Filtra en tiempo real mientras escribís
+    // ==========================================================================
+    if (inputBuscador) {
+        inputBuscador.addEventListener('input', (e) => {
+            const textoBusqueda = e.target.value.toLowerCase().trim();
+            
+            // Filtramos el array global según el nombre del producto
+            const productosFiltrados = listaProductosNormales.filter(item => {
+                const nombre = (item.PRODUCTO || "").toLowerCase();
+                return nombre.includes(textoBusqueda);
+            });
+
+            // Volvemos a dibujar solo los que coinciden
+            renderizarProductos(productosFiltrados, contenedorProductos);
+        });
+    }
+
+    // LÓGICA DEL BOTÓN DE COMPRAR MODERNA
+    contenedorProductos.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-comprar')) {
+            const nombre = e.target.getAttribute('data-name');
+            const precio = parseInt(e.target.getAttribute('data-price'), 10);
+
+            document.getElementById('modalCompraNombre').textContent = nombre;
+            document.getElementById('modalCompraPrecio').textContent = `$${precio.toLocaleString('es-AR')}`;
+
+            const modalExito = new bootstrap.Modal(document.getElementById('modalCompraExito'));
+            modalExito.show();
+        }
+    });
+});
+
+// ==========================================================================
+// FUNCIÓN PARA RENDERIZAR LAS TARJETAS EN PANTALLA
+// ==========================================================================
+function renderizarProductos(productos, contenedor) {
+    contenedor.innerHTML = ""; // Limpiamos la pantalla antes de volver a dibujar
+
+    if (productos.length === 0) {
+        contenedor.innerHTML = `
+            <div class="col-12 text-center my-4">
+                <p class="text-white-50 fs-5">🔍 No encontramos ningún producto que coincida con la búsqueda.</p>
             </div>
         `;
         return;
     }
 
-    // Dibujamos únicamente los productos normales
-    productosNormales.forEach(item => {
+    productos.forEach(item => {
         let nombreProducto = item.PRODUCTO || "Producto sin nombre";
         if (nombreProducto.includes("Pinza Amperimétrica Digital Uni-T UT210D")) {
             nombreProducto = "Pinza Amperimétrica Digital Uni-T UT210D 200A True RMS 600V 20000μF";
@@ -80,39 +122,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `;
 
-        contenedorProductos.appendChild(columna);
+        contenedor.appendChild(columna);
     });
+}
 
-    // LÓGICA DEL BOTÓN DE COMPRAR MODERNA (MODAL PREMIUM DE ÉXITO)
-    contenedorProductos.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-comprar')) {
-            const nombre = e.target.getAttribute('data-name');
-            const precio = parseInt(e.target.getAttribute('data-price'), 10);
-
-            // Inyectamos los datos del producto seleccionado dentro del modal de éxito
-            document.getElementById('modalCompraNombre').textContent = nombre;
-            document.getElementById('modalCompraPrecio').textContent = `$${precio.toLocaleString('es-AR')}`;
-
-            // Levantamos el modal usando la API global de Bootstrap
-            const modalExito = new bootstrap.Modal(document.getElementById('modalCompraExito'));
-            modalExito.show();
-        }
-    });
-});
-
-// ==========================================================================
-// FUNCIÓN PARA GENERAR EL CARRUSEL EN TIEMPO REAL DESDE LA PESTAÑA 'Banners'
-// ==========================================================================
+// FUNCIÓN DEL CARRUSEL
 async function cargarCarruselDinamico() {
     const contenedorBanners = document.getElementById('contenedorBanners');
     if (!contenedorBanners) return;
 
     try {
         const urlBanners = `https://docs.google.com/spreadsheets/d/${ID_EXCEL}/gviz/tq?tqx=out:json&sheet=Banners`;
-        
         const respuesta = await fetch(urlBanners);
         const textoResponse = await respuesta.text();
-        
         const jsonLimpio = JSON.parse(textoResponse.substring(47, textoResponse.length - 2));
         const filas = jsonLimpio.table.rows;
 
@@ -122,25 +144,17 @@ async function cargarCarruselDinamico() {
         }
 
         contenedorBanners.innerHTML = "";
-
         filas.forEach((fila, index) => {
             const urlImagen = fila.c[0] ? fila.c[0].v : null;
-
             if (urlImagen) {
                 const itemCarrusel = document.createElement('div');
                 itemCarrusel.classList.add('carousel-item');
-                
-                if (index === 0) {
-                    itemCarrusel.classList.add('active');
-                }
-
+                if (index === 0) itemCarrusel.classList.add('active');
                 itemCarrusel.innerHTML = `<img src="${urlImagen}" class="d-block w-100" alt="Banner ElectroTienda">`;
                 contenedorBanners.appendChild(itemCarrusel);
             }
         });
-
     } catch (error) {
-        console.error("Error cargando los banners del carrusel:", error);
-        contenedorBanners.innerHTML = `<div class="carousel-item active"><img src="https://via.placeholder.com/800x400?text=Error+Al+Cargar+Banners" class="d-block w-100"></div>`;
+        console.error("Error cargando los banners:", error);
     }
 }
